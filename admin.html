@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Baa No Gruh Udhyog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Login Screen -->
+    <div id="admin-login-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-xl max-w-md w-full p-8 space-y-6 border border-orange-100">
+            <div class="text-center space-y-2">
+                <div class="w-14 h-14 bg-orange-600 text-white rounded-full flex items-center justify-center text-2xl mx-auto shadow">🌿</div>
+                <h1 class="text-2xl font-extrabold text-gray-900">Baa No Gruh Udhyog</h1>
+                <p class="text-xs text-gray-500 uppercase tracking-wider font-bold">Admin Control Panel</p>
+            </div>
+            <form onsubmit="loginAdmin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Admin Password</label>
+                    <input type="password" id="admin-pwd-input" required class="w-full px-4 py-3 border rounded-xl text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none" placeholder="Enter password (admin123)">
+                </div>
+                <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 rounded-xl shadow transition">
+                    <i class="fa-solid fa-lock-open mr-2"></i> Login to Admin Dashboard
+                </button>
+            </form>
+            <div class="text-center">
+                <a href="index.html" class="text-xs font-bold text-orange-600 hover:underline">&larr; Back to Customer Storefront</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Screen -->
+    <div id="admin-dashboard-screen" class="hidden min-h-screen flex flex-col">
+        <!-- Top Admin Navbar -->
+        <header class="bg-gray-900 text-white px-6 py-4 flex flex-wrap items-center justify-between gap-4 shadow">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🌿</span>
+                <div>
+                    <h1 class="font-extrabold text-lg leading-none">Baa No Gruh Udhyog — Admin</h1>
+                    <span class="text-xs text-gray-400">Manage Products, Photos, Detailed Specs & Customer Orders</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="index.html" target="_blank" class="bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition">
+                    <i class="fa-solid fa-store mr-1"></i> View Live Store
+                </a>
+                <button onclick="logoutAdmin()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-bold px-3 py-2 rounded-lg">
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Summary -->
+        <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 pt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold text-gray-400 uppercase">Total Snacks Listed</span>
+                    <h3 id="stat-total-products" class="text-2xl font-extrabold text-gray-900 mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl"><i class="fa-solid fa-cookie-bite"></i></div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold text-gray-400 uppercase">Total Customer Orders</span>
+                    <h3 id="stat-total-orders" class="text-2xl font-extrabold text-gray-900 mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl"><i class="fa-solid fa-bag-shopping"></i></div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold text-gray-400 uppercase">Total Revenue</span>
+                    <h3 id="stat-total-revenue" class="text-2xl font-extrabold text-green-600 mt-1">₹0</h3>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-green-100 text-green-600 flex items-center justify-center text-xl"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 mt-6">
+            <div class="flex gap-2 border-b border-gray-200">
+                <button onclick="switchAdminSection('products')" id="tab-btn-products" class="px-5 py-3 text-sm font-extrabold border-b-2 border-orange-600 text-orange-600">Products & Details</button>
+                <button onclick="switchAdminSection('orders')" id="tab-btn-orders" class="px-5 py-3 text-sm font-extrabold text-gray-500 hover:text-gray-800">Customer Orders</button>
+            </div>
+        </div>
+
+        <!-- Main Workspace -->
+        <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 flex-1">
+
+            <!-- SECTION 1: MANAGE PRODUCTS -->
+            <div id="admin-products-view" class="space-y-4">
+                <div class="flex flex-wrap justify-between items-center gap-3">
+                    <h2 class="text-xl font-extrabold text-gray-900">Product Catalog</h2>
+                    <button onclick="openProductFormModal()" class="bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow transition">
+                        <i class="fa-solid fa-plus mr-1.5"></i> Add New Product
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-50 border-b text-xs uppercase text-gray-500">
+                            <tr>
+                                <th class="p-4">Photo & Product Name</th>
+                                <th class="p-4">Category</th>
+                                <th class="p-4">Net Qty</th>
+                                <th class="p-4">Price / MRP</th>
+                                <th class="p-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-products-tbody" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 2: MANAGE ORDERS -->
+            <div id="admin-orders-view" class="hidden space-y-4">
+                <h2 class="text-xl font-extrabold text-gray-900">Incoming Customer Orders</h2>
+                <div id="admin-orders-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Add / Edit Product Modal (Includes Photo Upload/Path + All Features & Details Fields) -->
+    <div id="admin-product-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 hidden">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-5 bg-orange-600 text-white flex justify-between items-center">
+                <h3 id="modal-form-heading" class="text-lg font-extrabold">Add New Product</h3>
+                <button onclick="closeProductFormModal()" class="text-2xl leading-none">&times;</button>
+            </div>
+
+            <form onsubmit="handleSaveProduct(event)" class="p-6 overflow-y-auto space-y-4 text-sm">
+                <input type="hidden" id="prod-id">
+
+                <!-- Basic Info -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Product Name *</label>
+                        <input type="text" id="prod-name" required class="w-full px-3.5 py-2.5 border rounded-xl" placeholder="e.g., Upwas Popcorn (Batata Sabudana Popcorn)">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Category *</label>
+                        <select id="prod-category" class="w-full px-3.5 py-2.5 border rounded-xl bg-white">
+                            <option value="Upwas Special">Upwas Special</option>
+                            <option value="Baked Khakhra">Baked Khakhra</option>
+                            <option value="Millet Snacks">Millet Snacks</option>
+                            <option value="Traditional Sweets">Traditional Sweets</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Highlight Badge</label>
+                        <input type="text" id="prod-badge" class="w-full px-3.5 py-2.5 border rounded-xl" placeholder="e.g., Upwas Special / Bestseller">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Selling Price (₹) *</label>
+                        <input type="number" id="prod-price" required class="w-full px-3.5 py-2.5 border rounded-xl" placeholder="160">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">MRP (₹)</label>
+                        <input type="number" id="prod-mrp" class="w-full px-3.5 py-2.5 border rounded-xl" placeholder="200">
+                    </div>
+                </div>
+
+                <!-- Product Photo Section (Supports local file upload OR images/filename.jpg path) -->
+                <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100 space-y-3">
+                    <label class="block text-xs font-extrabold text-orange-900 uppercase">Product Photo (Upload Photo or Enter Path)</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+                        <div>
+                            <input type="file" id="prod-photo-file" accept="image/*" onchange="previewUploadedImage(event)" class="text-xs text-gray-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-orange-600 file:text-white hover:file:bg-orange-700">
+                            <p class="text-[11px] text-gray-500 mt-1">Or type local path like <code>images/snack.jpg</code> below:</p>
+                            <input type="text" id="prod-image-path" class="w-full mt-1 px-3 py-2 border rounded-lg text-xs bg-white" placeholder="images/upwas-popcorn.jpg">
+                        </div>
+                        <div class="flex justify-center">
+                            <img id="prod-photo-preview" src="https://images.unsplash.com/photo-1599488615731-7e5c2823ff26?auto=format&fit=crop&q=80&w=300" class="w-28 h-28 object-cover rounded-xl border bg-white shadow-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features & Details Specifications (Matches ChhayaKart Bullet Points) -->
+                <div class="border-t pt-4 space-y-3">
+                    <h4 class="font-extrabold text-gray-900 text-sm uppercase tracking-wide">Features & Details Specifications</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Product Full Spec Title</label>
+                            <input type="text" id="spec-title" class="w-full px-3 py-2 border rounded-xl" placeholder="Upwas Popcorn (Batata Sabudana Popcorn) Ready to Fry">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Ingredients</label>
+                            <input type="text" id="spec-ingredients" class="w-full px-3 py-2 border rounded-xl" placeholder="Potato (Batata), Sabudana (Sago), Jeera & Salt (Sendha Namak)">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Product Type</label>
+                            <input type="text" id="spec-type" class="w-full px-3 py-2 border rounded-xl" placeholder="Ready to Fry / Ready to Eat">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Quality</label>
+                            <input type="text" id="spec-quality" class="w-full px-3 py-2 border rounded-xl" value="Premium">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Net Quantity</label>
+                            <input type="text" id="spec-qty" class="w-full px-3 py-2 border rounded-xl" placeholder="400 gm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Packaging</label>
+                            <input type="text" id="spec-packaging" class="w-full px-3 py-2 border rounded-xl" placeholder="Plastic & Cardboard">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Product Feature</label>
+                            <input type="text" id="spec-feature" class="w-full px-3 py-2 border rounded-xl" placeholder="Homemade, Organic, Healthy, Upwas Special, Fasting Essential">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Manufacturer</label>
+                            <input type="text" id="spec-manufacturer" class="w-full px-3 py-2 border rounded-xl" value="Baa No Gruh Udhyog, Rajkot, Gujarat">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Country of Origin</label>
+                            <input type="text" id="spec-origin" class="w-full px-3 py-2 border rounded-xl" value="India">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Customer Care Contact</label>
+                            <input type="text" id="spec-care" class="w-full px-3 py-2 border rounded-xl" value="9420920320">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-3">
+                    <button type="button" onclick="closeProductFormModal()" class="px-5 py-2.5 rounded-xl border font-bold text-gray-600">Cancel</button>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold shadow">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

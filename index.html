@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baa No Gruh Udhyog | Gaon Ki Dukaan - Homemade Healthy Snacks</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="text-gray-800">
+
+    <!-- Top Orange Header (ChhayaKart Inspired) -->
+    <header class="sticky top-0 z-40 bg-orange-600 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+            <!-- Left: Menu + Brand -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="text-white text-xl p-1.5 hover:bg-orange-700 rounded-lg">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <a href="#" onclick="switchView('home')" class="flex items-center gap-2">
+                    <div class="w-9 h-9 bg-white text-orange-600 rounded-full flex items-center justify-center font-extrabold text-lg shadow">
+                        🌿
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-extrabold tracking-wide uppercase leading-none">Baa No Gruh Udhyog</h1>
+                        <span class="text-[11px] text-orange-100 font-medium tracking-wider">Gaon Ki Dukaan • Pure & Homemade</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Center: Search Bar (Desktop) -->
+            <div class="hidden md:flex flex-1 max-w-xl mx-4">
+                <div class="relative w-full">
+                    <input type="text" id="desktop-search" oninput="handleSearch(this.value)" placeholder="Search Upwas Popcorn, Khakhra, Millet Snacks..." class="w-full pl-10 pr-4 py-2 rounded-full text-gray-800 text-sm focus:outline-none shadow-inner">
+                    <i class="fa-solid fa-search absolute left-3.5 top-2.5 text-gray-400"></i>
+                </div>
+            </div>
+
+            <!-- Right: Cart, Orders, Admin Link -->
+            <div class="flex items-center gap-3 sm:gap-4">
+                <button onclick="switchView('orders')" class="hidden sm:flex items-center gap-1.5 text-xs bg-orange-700 hover:bg-orange-800 px-3 py-2 rounded-lg font-semibold transition">
+                    <i class="fa-solid fa-box"></i>
+                    <span>My Orders</span>
+                </button>
+                <button onclick="toggleCart()" class="relative p-2 hover:bg-orange-700 rounded-full transition">
+                    <i class="fa-solid fa-cart-shopping text-xl"></i>
+                    <span id="header-cart-count" class="absolute -top-0.5 -right-0.5 bg-white text-orange-600 text-[11px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center shadow">0</span>
+                </button>
+                <a href="admin.html" class="hidden md:flex items-center gap-1 text-xs bg-amber-950/40 hover:bg-amber-950/60 px-3 py-2 rounded-lg font-semibold border border-orange-400/30 transition">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>Admin</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Mobile Search Bar -->
+        <div class="md:hidden px-4 pb-3">
+            <div class="relative w-full">
+                <input type="text" id="mobile-search" oninput="handleSearch(this.value)" placeholder="Search snacks, upwas, khakhra..." class="w-full pl-10 pr-4 py-2 rounded-full text-gray-800 text-sm focus:outline-none shadow-inner">
+                <i class="fa-solid fa-search absolute left-3.5 top-2.5 text-gray-400"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Slide-out Category Sidebar -->
+    <div id="category-sidebar" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50" onclick="toggleSidebar()"></div>
+        <div class="relative w-72 max-w-[80vw] bg-white h-full shadow-2xl flex flex-col">
+            <div class="p-5 bg-orange-600 text-white flex justify-between items-center">
+                <span class="font-bold text-lg">🌿 Categories</span>
+                <button onclick="toggleSidebar()" class="text-2xl leading-none">&times;</button>
+            </div>
+            <div class="p-4 space-y-2 flex-1 overflow-y-auto">
+                <button onclick="filterByCategory('All'); toggleSidebar();" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold hover:bg-orange-50 text-gray-700 flex items-center justify-between">
+                    <span>All Healthy Snacks</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                </button>
+                <button onclick="filterByCategory('Upwas Special'); toggleSidebar();" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold hover:bg-orange-50 text-gray-700 flex items-center justify-between">
+                    <span>Upwas Special (Fasting)</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                </button>
+                <button onclick="filterByCategory('Baked Khakhra'); toggleSidebar();" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold hover:bg-orange-50 text-gray-700 flex items-center justify-between">
+                    <span>Baked Khakhra</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                </button>
+                <button onclick="filterByCategory('Millet Snacks'); toggleSidebar();" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold hover:bg-orange-50 text-gray-700 flex items-center justify-between">
+                    <span>Millet Diet Snacks</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                </button>
+                <button onclick="filterByCategory('Traditional Sweets'); toggleSidebar();" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold hover:bg-orange-50 text-gray-700 flex items-center justify-between">
+                    <span>Traditional Sweets & Laddoo</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                </button>
+                <hr class="my-3">
+                <a href="admin.html" class="block w-full text-left px-4 py-2.5 rounded-xl font-bold bg-amber-50 text-orange-700">
+                    <i class="fa-solid fa-lock mr-2"></i> Open Admin Panel
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT VIEWS -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+
+        <!-- VIEW 1: STOREFRONT / HOME -->
+        <div id="view-home" class="space-y-8">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-orange-600 to-amber-600 rounded-2xl p-6 sm:p-10 text-white shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-3 max-w-xl">
+                    <span class="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">100% Homemade • Zero Preservatives</span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold leading-tight">Authentic Homemade Healthy Snacks by Baa</h2>
+                    <p class="text-orange-100 text-sm sm:text-base">Freshly prepared in small batches with pure ingredients, sendha namak, millets, and traditional recipes.</p>
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <a href="#product-catalog" class="bg-white text-orange-600 font-bold px-6 py-2.5 rounded-xl shadow hover:bg-orange-50 transition text-sm">Shop Snacks</a>
+                        <button onclick="switchView('contact')" class="bg-orange-700/60 border border-white/30 text-white font-semibold px-5 py-2.5 rounded-xl hover:bg-orange-700 transition text-sm">Bulk / Custom Order</button>
+                    </div>
+                </div>
+                <div class="w-full md:w-72 h-48 rounded-xl overflow-hidden shadow-md border-2 border-white/30 shrink-0 bg-orange-800">
+                    <img src="images/hero-banner.jpg" onerror="this.src='https://images.unsplash.com/photo-1599488615731-7e5c2823ff26?auto=format&fit=crop&q=80&w=600'" alt="Baa No Gruh Udhyog Snacks" class="w-full h-full object-cover">
+                </div>
+            </div>
+
+            <!-- Category Pills -->
+            <div id="product-catalog" class="flex items-center gap-2 overflow-x-auto pb-2">
+                <button onclick="filterByCategory('All')" data-cat="All" class="cat-pill px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-orange-600 text-white whitespace-nowrap shadow-sm">All Snacks</button>
+                <button onclick="filterByCategory('Upwas Special')" data-cat="Upwas Special" class="cat-pill px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-gray-700 border border-orange-200 hover:bg-orange-50 whitespace-nowrap">Upwas Special</button>
+                <button onclick="filterByCategory('Baked Khakhra')" data-cat="Baked Khakhra" class="cat-pill px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-gray-700 border border-orange-200 hover:bg-orange-50 whitespace-nowrap">Baked Khakhra</button>
+                <button onclick="filterByCategory('Millet Snacks')" data-cat="Millet Snacks" class="cat-pill px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-gray-700 border border-orange-200 hover:bg-orange-50 whitespace-nowrap">Millet Snacks</button>
+                <button onclick="filterByCategory('Traditional Sweets')" data-cat="Traditional Sweets" class="cat-pill px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-gray-700 border border-orange-200 hover:bg-orange-50 whitespace-nowrap">Traditional Sweets</button>
+            </div>
+
+            <!-- Product Grid -->
+            <div>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-extrabold text-gray-900" id="catalog-heading">All Healthy Snacks</h3>
+                    <span class="text-xs text-gray-500 font-medium" id="product-count-label">Showing products</span>
+                </div>
+                <div id="client-product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <!-- Rendered by client.js -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: PRODUCT DETAIL PAGE (Matches ChhayaKart Features & Details Layout) -->
+        <div id="view-product-detail" class="hidden">
+            <button onclick="switchView('home')" class="mb-4 inline-flex items-center gap-2 text-sm font-bold text-orange-600 hover:text-orange-700">
+                <i class="fa-solid fa-arrow-left"></i> Back to Snacks
+            </button>
+            <div id="product-detail-container" class="bg-white rounded-2xl shadow-sm border border-orange-100 p-5 sm:p-8">
+                <!-- Populated dynamically with Features & Details bullet list, Add to Cart & Buy Now -->
+            </div>
+        </div>
+
+        <!-- VIEW 3: WISHLIST -->
+        <div id="view-wishlist" class="hidden space-y-6">
+            <h2 class="text-2xl font-extrabold text-gray-900">❤️ My Saved Wishlist</h2>
+            <div id="wishlist-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+        </div>
+
+        <!-- VIEW 4: MY ORDERS -->
+        <div id="view-orders" class="hidden space-y-6">
+            <h2 class="text-2xl font-extrabold text-gray-900">📦 My Orders</h2>
+            <div id="client-orders-list" class="space-y-4"></div>
+        </div>
+
+        <!-- VIEW 5: CONTACT US -->
+        <div id="view-contact" class="hidden max-w-2xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-orange-100 space-y-6">
+            <h2 class="text-2xl font-extrabold text-gray-900">📞 Contact Baa No Gruh Udhyog</h2>
+            <p class="text-sm text-gray-600">For fresh homemade snack orders, bulk festive hampers, or inquiries, reach out directly:</p>
+            <div class="space-y-3 text-sm bg-orange-50 p-4 rounded-xl border border-orange-100">
+                <p><strong>Customer Care Contact:</strong> +91 9420920320</p>
+                <p><strong>Manufacturer:</strong> Baa No Gruh Udhyog, Rajkot, Gujarat, India</p>
+                <p><strong>Working Hours:</strong> Mon - Sat, 9:00 AM to 8:00 PM</p>
+            </div>
+            <form onsubmit="submitContactForm(event)" class="space-y-4">
+                <input type="text" required placeholder="Your Full Name" class="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
+                <input type="tel" required placeholder="Mobile Number" class="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
+                <textarea rows="3" required placeholder="Write your message or bulk order details..." class="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"></textarea>
+                <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl shadow">Send Inquiry</button>
+            </form>
+        </div>
+
+    </main>
+
+    <!-- Mobile Bottom Navigation Bar (Matches ChhayaKart Mobile Footer) -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-200 flex justify-around items-center py-2 text-[11px] font-semibold text-gray-600 shadow-lg">
+        <button onclick="switchView('home')" class="flex flex-col items-center gap-1 text-orange-600">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span>Home</span>
+        </button>
+        <button onclick="toggleSidebar()" class="flex flex-col items-center gap-1 hover:text-orange-600">
+            <i class="fa-solid fa-table-cells-large text-lg"></i>
+            <span>Categories</span>
+        </button>
+        <button onclick="switchView('contact')" class="flex flex-col items-center gap-1 hover:text-orange-600">
+            <i class="fa-solid fa-phone text-lg"></i>
+            <span>Contact Us</span>
+        </button>
+        <button onclick="switchView('wishlist')" class="flex flex-col items-center gap-1 hover:text-orange-600">
+            <i class="fa-regular fa-heart text-lg"></i>
+            <span>Wishlist</span>
+        </button>
+        <button onclick="switchView('orders')" class="flex flex-col items-center gap-1 hover:text-orange-600">
+            <i class="fa-solid fa-box-open text-lg"></i>
+            <span>My Orders</span>
+        </button>
+    </nav>
+
+    <!-- Slide-out Cart Drawer -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50" onclick="toggleCart()"></div>
+        <div class="absolute inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col">
+            <div class="p-5 bg-orange-600 text-white flex justify-between items-center">
+                <h3 class="font-bold text-lg"><i class="fa-solid fa-cart-shopping mr-2"></i>Your Cart</h3>
+                <button onclick="toggleCart()" class="text-2xl leading-none">&times;</button>
+            </div>
+            <div id="cart-items-list" class="flex-1 overflow-y-auto p-5 divide-y"></div>
+            <div class="p-5 bg-orange-50 border-t border-orange-100 space-y-4">
+                <div class="flex justify-between font-extrabold text-lg text-gray-900">
+                    <span>Total Payable:</span>
+                    <span id="cart-subtotal">₹0</span>
+                </div>
+                <button onclick="openCheckoutModal()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 rounded-xl shadow transition">
+                    Proceed to Checkout &raquo;
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-xl font-extrabold text-gray-900">Complete Your Order</h3>
+                <button onclick="closeCheckoutModal()" class="text-2xl text-gray-400 hover:text-gray-600">&times;</button>
+            </div>
+            <form onsubmit="confirmOrder(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Full Name</label>
+                    <input type="text" id="cust-name" required class="w-full px-3.5 py-2.5 border rounded-xl text-sm" placeholder="Enter your name">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Mobile Number</label>
+                    <input type="tel" id="cust-phone" required class="w-full px-3.5 py-2.5 border rounded-xl text-sm" placeholder="10-digit mobile number">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Full Delivery Address</label>
+                    <textarea id="cust-address" rows="3" required class="w-full px-3.5 py-2.5 border rounded-xl text-sm" placeholder="House/Flat No, Street, Landmark, City, Pincode"></textarea>
+                </div>
+                <div class="bg-orange-50 p-3 rounded-xl flex justify-between items-center text-sm font-bold text-orange-900">
+                    <span>Payment Mode:</span>
+                    <span>Cash on Delivery (COD)</span>
+                </div>
+                <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 rounded-xl shadow">
+                    Place Order (<span id="checkout-total-label">₹0</span>)
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/client.js"></script>
+</body>
+</html>
