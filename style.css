@@ -1,0 +1,39 @@
+/* Custom Theme & Utilities for Baa No Gruh Udhyog */
+:root {
+    --brand-orange: #ea580c;
+    --brand-orange-dark: #c2410c;
+    --brand-amber: #f59e0b;
+    --brand-bg: #fffbf5;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--brand-bg);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #fff7ed;
+}
+::-webkit-scrollbar-thumb {
+    background: #ea580c;
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #c2410c;
+}
+
+/* Mobile Bottom Nav Safe Padding */
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 70px;
+    }
+}
